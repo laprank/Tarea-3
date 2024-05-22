@@ -4,6 +4,7 @@
 #include "tdas/extra.h"
 #include "tdas/map.h"
 #include "tdas/stack.h"
+#include "tdas/queue.h"
 #include "tdas/heap.h"
 #include <string.h>
 #include <stdbool.h>
@@ -93,6 +94,7 @@ int distancia_L1(State* state) {
 
 
 
+
 // Función para imprimir el estado del puzzle
 void imprimirEstado(const State *estado) {
     for (int i = 0; i < 3; i++) {
@@ -126,7 +128,30 @@ void dfs(State *estado_inicial){
         while (aux != NULL){
             if (aux->visitado == 0){
                 stack_push(stack, aux);
-                
+            }
+            aux = (State*) list_next(adj_nodes);
+        }
+        list_clean(adj_nodes);
+    }
+    printf("No se encontro solucion\n");
+}
+void bfs(State *estado_inicial){
+    Queue* queue = queue_create(queue);
+    queue_insert(queue, estado_inicial);
+    while(list_is_empty(queue) == 0){
+        State* estado_actual = (State*) queue_remove(queue);
+        if (estado_actual->visitado == 1) continue;
+        estado_actual->visitado = 1;
+        if (distancia_L1(estado_actual) == 0){
+            printf("Solucion encontrada:\n");
+            imprimirEstado(estado_actual);
+            return;
+        }
+        List* adj_nodes = get_adj_nodes(estado_actual);
+        State* aux = (State*) list_first(adj_nodes);
+        while (aux){
+            if (aux->visitado == 0){
+                queue_insert(queue, aux);
             }
             aux = (State*) list_next(adj_nodes);
         }
@@ -141,7 +166,7 @@ int main() {
          {1, 3, 4}, // Segunda fila
          {6, 5, 7}, // Tercera fila
          },  
-        0, 1   // Posición del espacio vacío (fila 0, columna 1)
+        0, 0   // Posición del espacio vacío (fila 0, columna 1)
     };
     estado_inicial.actions = list_create();
     estado_inicial.visitado = 0;
@@ -192,10 +217,8 @@ int main() {
             printf("Has seleccionado la opción 1: Búsqueda en Profundidad\n");
             dfs(&estado_inicial);
             break;
-          //dfs(estado_inicial);
-          break;
         case '2':
-          //bfs(estado_inicial);
+            bfs(&estado_inicial);
           break;
         case '3':
           //best_first(estado_inicial);
