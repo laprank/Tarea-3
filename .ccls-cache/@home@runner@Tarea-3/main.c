@@ -113,25 +113,44 @@ void imprimirEstado(const State *estado) {
 
 
 void dfs(State *estado_inicial){
+    int cont = 0;
     Stack* stack = stack_create(stack);
+    if (!stack) {
+        printf("Error 1\n");
+        return;
+    }
     stack_push(stack, estado_inicial);
     while (!stack_is_empty(stack)){
         State* estado_actual = (State*) stack_top(stack);
         stack_pop(stack);
-        if(distancia_L1(estado_actual)==0){
+        if(distancia_L1(estado_actual) == 0){
             printf("Solucion encontrada\n");
             imprimirEstado(estado_actual);
             return;
         }
         List* adj_nodes = get_adj_nodes(estado_actual);
-        while(!list_is_empty(adj_nodes)){
+        if (!adj_nodes) {
+            printf("Error 2\n");
+            continue;
+        }
+        while (!list_is_empty(adj_nodes)){
             State* estado_siguiente = (State*) list_first(adj_nodes);
+            if (!estado_siguiente) {
+                printf("Error: 3\n");
+                list_popFront(adj_nodes);
+                continue;
+            }
             stack_push(stack, estado_siguiente);
             list_popFront(adj_nodes);
+            cont++;
         }
+        // Liberar la memoria de adj_nodes si es necesario
+        free(adj_nodes);
     }
+    printf("Total de estados procesados: %d\n", cont);
     printf("No se encontro solucion\n");
 }
+
 void bfs(State *estado_inicial){
     int cont = 0;
     Queue* queue = queue_create(queue);
