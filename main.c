@@ -15,7 +15,6 @@ typedef struct {
     int x;    // Posición x del espacio vacío
     int y;    // Posición y del espacio vacío
     List* actions;
-    int visitado;
 } State;
 List* get_adj_nodes(State *state){
     List* adj_nodes = list_create();
@@ -75,6 +74,9 @@ List* get_adj_nodes(State *state){
 int stack_is_empty(Stack* stack) {
     return stack->head == NULL;
 }
+int queue_is_empty(Queue* queue) {
+    return queue->head == NULL;
+}
 int list_is_empty(List* list) {
     return list->head == NULL;
 }
@@ -116,48 +118,42 @@ void dfs(State *estado_inicial){
     while (!stack_is_empty(stack)){
         State* estado_actual = (State*) stack_top(stack);
         stack_pop(stack);
-        if (estado_actual->visitado == 1) continue;
-        estado_actual->visitado = 1;
-        if (distancia_L1(estado_actual) == 0){
-            printf("Solucion encontrada:\n");
+        if(distancia_L1(estado_actual)==0){
+            printf("Solucion encontrada\n");
             imprimirEstado(estado_actual);
             return;
         }
         List* adj_nodes = get_adj_nodes(estado_actual);
-        State* aux = (State*) list_first(adj_nodes);
-        while (aux != NULL){
-            if (aux->visitado == 0){
-                stack_push(stack, aux);
-            }
-            aux = (State*) list_next(adj_nodes);
+        while(!list_is_empty(adj_nodes)){
+            State* estado_siguiente = (State*) list_first(adj_nodes);
+            stack_push(stack, estado_siguiente);
+            list_popFront(adj_nodes);
         }
-        list_clean(adj_nodes);
     }
     printf("No se encontro solucion\n");
 }
 void bfs(State *estado_inicial){
+    int cont = 0;
     Queue* queue = queue_create(queue);
     queue_insert(queue, estado_inicial);
-    while(list_is_empty(queue) == 0){
-        State* estado_actual = (State*) queue_remove(queue);
-        if (estado_actual->visitado == 1) continue;
-        estado_actual->visitado = 1;
+    while (!queue_is_empty(queue)){
+        State* estado_actual = (State*) queue_front(queue);
+        queue_remove(queue);
         if (distancia_L1(estado_actual) == 0){
-            printf("Solucion encontrada:\n");
+            printf("Se encontro solucion\n");
             imprimirEstado(estado_actual);
             return;
         }
         List* adj_nodes = get_adj_nodes(estado_actual);
-        State* aux = (State*) list_first(adj_nodes);
-        while (aux){
-            if (aux->visitado == 0){
-                queue_insert(queue, aux);
-            }
-            aux = (State*) list_next(adj_nodes);
+        while (!list_is_empty(adj_nodes)){
+            State* estado_adj = (State*) list_first(adj_nodes);
+            queue_insert(queue, estado_adj);
+            list_popFront(adj_nodes);
+            cont++;
         }
-        list_clean(adj_nodes);
     }
     printf("No se encontro solucion\n");
+    printf("%d", cont);
 }
 int main() {
     // Estado inicial del puzzle
@@ -169,7 +165,6 @@ int main() {
         0, 0   // Posición del espacio vacío (fila 0, columna 1)
     };
     estado_inicial.actions = list_create();
-    estado_inicial.visitado = 0;
 
     // Imprime el estado inicial
     printf("Estado inicial del puzzle:\n");
