@@ -6,8 +6,10 @@
 #include "tdas/stack.h"
 #include "tdas/queue.h"
 #include "tdas/heap.h"
+#include "tdas/set.h"
 #include <string.h>
 #include <stdbool.h>
+#define MAX_DEPTH 1000
 
 // Definición de la estructura para el estado del puzzle
 typedef struct {
@@ -15,6 +17,7 @@ typedef struct {
     int x;    // Posición x del espacio vacío
     int y;    // Posición y del espacio vacío
     List* actions;
+    int depth;
 } State;
 List* get_adj_nodes(State *state){
     List* adj_nodes = list_create();
@@ -115,10 +118,6 @@ void imprimirEstado(const State *estado) {
 void dfs(State *estado_inicial){
     int cont = 0;
     Stack* stack = stack_create(stack);
-    if (!stack) {
-        printf("Error 1\n");
-        return;
-    }
     stack_push(stack, estado_inicial);
     while (!stack_is_empty(stack)){
         State* estado_actual = (State*) stack_top(stack);
@@ -126,28 +125,26 @@ void dfs(State *estado_inicial){
         if(distancia_L1(estado_actual) == 0){
             printf("Solucion encontrada\n");
             imprimirEstado(estado_actual);
+            while (!stack_is_empty(stack)){
+                stack_pop(stack);
+            }
             return;
         }
-        List* adj_nodes = get_adj_nodes(estado_actual);
-        if (!adj_nodes) {
-            printf("Error 2\n");
-            continue;
-        }
-        while (!list_is_empty(adj_nodes)){
-            State* estado_siguiente = (State*) list_first(adj_nodes);
-            if (!estado_siguiente) {
-                printf("Error: 3\n");
+        if(estado_actual->depth <= MAX_DEPTH){
+            List* adj_nodes = get_adj_nodes(estado_actual);
+            while (!list_is_empty(adj_nodes)){
+                State* estado_siguente = (State*) list_first(adj_nodes);
+                estado_siguente->depth = estado_actual->depth + 1;
                 list_popFront(adj_nodes);
-                continue;
+                stack_push(stack, estado_siguente);
             }
-            stack_push(stack, estado_siguiente);
-            list_popFront(adj_nodes);
-            cont++;
         }
-        // Liberar la memoria de adj_nodes si es necesario
-        free(adj_nodes);
+        else{
+            estado_actual->depth = 0;
+        }
     }
-    printf("Total de estados procesados: %d\n", cont);
+
+    printf("%d\n", cont);
     printf("No se encontro solucion\n");
 }
 
@@ -184,7 +181,6 @@ int main() {
         0, 0   // Posición del espacio vacío (fila 0, columna 1)
     };
     estado_inicial.actions = list_create();
-
     // Imprime el estado inicial
     printf("Estado inicial del puzzle:\n");
     imprimirEstado(&estado_inicial);
