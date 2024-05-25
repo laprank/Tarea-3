@@ -145,16 +145,11 @@ void dfs(State *estado_inicial){
     List* act = list_create();
     printf("el estado inicial es:\n");
     imprimirEstado(estado_inicial);
-    //Set* visited = set_create(NULL);
     Stack* stack = stack_create(stack);
     stack_push(stack, estado_inicial);
     while (!stack_is_empty(stack)){
         State* estado_actual = (State*) stack_top(stack);
         stack_pop(stack);
-        //if (set_search(visited, estado_actual) != NULL) {
-            //continue; // Saltar este estado y continuar con el siguiente
-        //}
-        //set_insert(visited, estado_actual);
         if(distancia_L1(estado_actual) == 0){
             printf("Solucion encontrada\n");
             printf("itraciones para resolver el puzzle: %ld\n", cont);
@@ -164,7 +159,6 @@ void dfs(State *estado_inicial){
             while (!stack_is_empty(stack)){
                 stack_pop(stack);
             }
-            //set_clean(visited);
             return;
         }
         if(estado_actual->depth <= MAX_DEPTH){
