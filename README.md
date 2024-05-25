@@ -52,10 +52,6 @@ Al ejecutar el programa, verás un menú con las siguientes opciones:
 ### Estado Inicial del Puzzle:
 
 El programa imprime el estado inicial del puzzle antes de comenzar la búsqueda:
-   Estado inicial del puzzle:
-   0 2 8 
-   1 3 4 
-   6 5 7 
 
 ### Búsqueda en Profundidad (DFS):
 
@@ -67,7 +63,7 @@ El programa realiza la búsqueda en profundidad y muestra los resultados:
 
 El programa realiza la búsqueda en anchura y muestra los resultados:
    Se encontró solución
-   iteraciones para resolver el puzzle: [número de nodos]
+   iteraciones para resolver el puzzle: [número de iteraciones]
 
 ## Contribuciones
 
