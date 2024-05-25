@@ -76,11 +76,11 @@ El programa realiza la búsqueda en anchura y muestra los resultados:
 
 ## Problemas Conocidos
 
-- La funcionalidad para buscar por otros métodos (como la búsqueda heurística) está en desarrollo.
+- La funcionalidad para buscar por otros métodos (como la búsqueda mejor-primero) está en desarrollo.
 - la impresion de la secuencia mas corta en desarrollo.
 
 ## Áreas de Mejora
 
 - Mejorar la precisión y eficiencia de las búsquedas.
-- Implementar nuevas funcionalidades, como la búsqueda heurística y y la impresion de la secuencia entera.
+- Implementar nuevas funcionalidades, como la búsqueda mejor-primero y y la impresion de la secuencia entera.
 ```
