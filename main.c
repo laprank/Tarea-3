@@ -23,7 +23,6 @@ List* get_adj_nodes(State *state){
     List* adj_nodes = list_create();
     int x = state->x;
     int y = state->y;
-    int i, j;
     // Movimiento hacia arriba
     if (x > 0){
         State* new_state = (State*) malloc(sizeof(State));
@@ -116,10 +115,17 @@ void imprimirEstado(const State *estado) {
 // Función para verificar si el estado es igual a otro estado
 void imprimirListaDeAcciones(List* actions) {
     printf("Secuencia de acciones: ");
+    int cont = 0;
     while (!list_is_empty(actions)) {
         char* action = (char*) list_first(actions);
         printf("%s ", action);
         list_popFront(actions);
+        cont++;
+        if(cont>=5){
+            char* last_action = (char*) actions->tail->data;
+            printf("... %s\n",last_action);
+            break;
+        }
     }
     printf("\n");
 }
@@ -137,6 +143,8 @@ List* copy_list(List* list){
 void dfs(State *estado_inicial){
     long cont = 0;
     List* act = list_create();
+    printf("el estado inicial es:\n");
+    imprimirEstado(estado_inicial);
     //Set* visited = set_create(NULL);
     Stack* stack = stack_create(stack);
     stack_push(stack, estado_inicial);
@@ -149,9 +157,9 @@ void dfs(State *estado_inicial){
         //set_insert(visited, estado_actual);
         if(distancia_L1(estado_actual) == 0){
             printf("Solucion encontrada\n");
-            printf("El total de itraciones para resolver el puzzle fueron: %ld\n", cont);
+            printf("itraciones para resolver el puzzle: %ld\n", cont);
             imprimirEstado(estado_actual);
-            //imprimirListaDeAcciones(act);
+            imprimirListaDeAcciones(act);
             
             while (!stack_is_empty(stack)){
                 stack_pop(stack);
@@ -180,6 +188,9 @@ void dfs(State *estado_inicial){
 
 void bfs(State *estado_inicial){
     int cont = 0;
+    List* act = list_create();
+    printf("el estado inicial es:\n");
+    imprimirEstado(estado_inicial);
     Queue* queue = queue_create(queue);
     queue_insert(queue, estado_inicial);
     while (!queue_is_empty(queue)){
@@ -187,13 +198,15 @@ void bfs(State *estado_inicial){
         queue_remove(queue);
         if (distancia_L1(estado_actual) == 0){
             printf("Se encontro solucion\n");
-            printf("el total de nodos explorados son %d\n", cont);
+            printf("iteraciones para resolver el puzzle: %d\n", cont);
             imprimirEstado(estado_actual);
+            imprimirListaDeAcciones(act);
             return;
         }
         List* adj_nodes = get_adj_nodes(estado_actual);
         while (!list_is_empty(adj_nodes)){
             State* estado_adj = (State*) list_first(adj_nodes);
+            list_pushBack(act, estado_adj->actions->head->data);
             queue_insert(queue, estado_adj);
             list_popFront(adj_nodes);
             cont++;
