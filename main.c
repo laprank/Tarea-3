@@ -9,7 +9,7 @@
 #include "tdas/set.h"
 #include <string.h>
 #include <stdbool.h>
-#define MAX_DEPTH 1000
+#define MAX_DEPTH 50
 
 // Definición de la estructura para el estado del puzzle
 typedef struct {
@@ -74,6 +74,7 @@ List* get_adj_nodes(State *state){
     }
     return adj_nodes;
 }
+
 int stack_is_empty(Stack* stack) {
     return stack->head == NULL;
 }
@@ -113,30 +114,60 @@ void imprimirEstado(const State *estado) {
     }
 }
 // Función para verificar si el estado es igual a otro estado
+void imprimirListaDeAcciones(List* actions) {
+    printf("Secuencia de acciones: ");
+    while (!list_is_empty(actions)) {
+        char* action = (char*) list_first(actions);
+        printf("%s ", action);
+        list_popFront(actions);
+    }
+    printf("\n");
+}
 
+List* copy_list(List* list){
+    List* new_list = list_create();
+    Node* current = list->head;
+    while (current != NULL){
+        list_pushBack(new_list, current->data);
+        current = current->next;
+    }
+    return new_list;
+}
 
 void dfs(State *estado_inicial){
-    int cont = 0;
+    long cont = 0;
+    List* act = list_create();
+    //Set* visited = set_create(NULL);
     Stack* stack = stack_create(stack);
     stack_push(stack, estado_inicial);
     while (!stack_is_empty(stack)){
         State* estado_actual = (State*) stack_top(stack);
         stack_pop(stack);
+        //if (set_search(visited, estado_actual) != NULL) {
+            //continue; // Saltar este estado y continuar con el siguiente
+        //}
+        //set_insert(visited, estado_actual);
         if(distancia_L1(estado_actual) == 0){
             printf("Solucion encontrada\n");
+            printf("El total de itraciones para resolver el puzzle fueron: %ld\n", cont);
             imprimirEstado(estado_actual);
+            //imprimirListaDeAcciones(act);
+            
             while (!stack_is_empty(stack)){
                 stack_pop(stack);
             }
+            //set_clean(visited);
             return;
         }
         if(estado_actual->depth <= MAX_DEPTH){
             List* adj_nodes = get_adj_nodes(estado_actual);
             while (!list_is_empty(adj_nodes)){
                 State* estado_siguente = (State*) list_first(adj_nodes);
+                list_pushBack(act, estado_siguente->actions->head->data);
                 estado_siguente->depth = estado_actual->depth + 1;
                 list_popFront(adj_nodes);
                 stack_push(stack, estado_siguente);
+                cont++;
             }
         }
         else{
@@ -144,7 +175,6 @@ void dfs(State *estado_inicial){
         }
     }
 
-    printf("%d\n", cont);
     printf("No se encontro solucion\n");
 }
 
@@ -157,6 +187,7 @@ void bfs(State *estado_inicial){
         queue_remove(queue);
         if (distancia_L1(estado_actual) == 0){
             printf("Se encontro solucion\n");
+            printf("el total de nodos explorados son %d\n", cont);
             imprimirEstado(estado_actual);
             return;
         }
@@ -232,6 +263,7 @@ int main() {
           break;
         case '3':
           //best_first(estado_inicial);
+          // al estar solo este no lo tengo que hacer
           break;
         }
         presioneTeclaParaContinuar();
