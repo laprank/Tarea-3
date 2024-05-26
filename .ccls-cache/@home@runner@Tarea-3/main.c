@@ -93,17 +93,17 @@ List* get_adj_nodes(State *state) {
 }
 
 // Función para verificar si el stack está vacío
-int stack_is_empty(Stack* stack) {
+int pila_vacia(Stack* stack) {
     return stack->head == NULL;
 }
 
 // Función para verificar si la queue está vacía
-int queue_is_empty(Queue* queue) {
+int cola_vacia(Queue* queue) {
     return queue->head == NULL;
 }
 
 // Función para verificar si la lista está vacía
-int list_is_empty(List* list) {
+int lista_vacia(List* list) {
     return list->head == NULL;
 }
 
@@ -153,7 +153,7 @@ void dfs(State *estado_inicial) {
     imprimirEstado(estado_inicial);
     Stack* stack = stack_create(stack);
     stack_push(stack, estado_inicial);
-    while (!stack_is_empty(stack)) {
+    while (!pila_vacia(stack)) {
         State* estado_actual = (State*) stack_top(stack);
         stack_pop(stack);
         if (distancia_L1(estado_actual) == 0) {
@@ -162,14 +162,14 @@ void dfs(State *estado_inicial) {
             imprimirEstado(estado_actual);
             imprimirListaDeAcciones(estado_actual->actions);
 
-            while (!stack_is_empty(stack)) {
+            while (!pila_vacia(stack)) {
                 stack_pop(stack);
             }
             return;
         }
         if (estado_actual->depth <= MAX_DEPTH) {
             List* adj_nodes = get_adj_nodes(estado_actual);
-            while (!list_is_empty(adj_nodes)) {
+            while (!lista_vacia(adj_nodes)) {
                 State* estado_siguiente = (State*) list_first(adj_nodes);
                 estado_siguiente->depth = estado_actual->depth + 1;
                 list_popFront(adj_nodes);
@@ -191,7 +191,7 @@ void bfs(State *estado_inicial) {
     imprimirEstado(estado_inicial);
     Queue* queue = queue_create(queue);
     queue_insert(queue, estado_inicial);
-    while (!queue_is_empty(queue)) {
+    while (!cola_vacia(queue)) {
         State* estado_actual = (State*) queue_front(queue);
         queue_remove(queue);
         if (distancia_L1(estado_actual) == 0) {
@@ -202,10 +202,10 @@ void bfs(State *estado_inicial) {
             return;
         }
         List* adj_nodes = get_adj_nodes(estado_actual);
-        while (!list_is_empty(adj_nodes)) {
-            State* estado_adj = (State*) list_first(adj_nodes);
-            estado_adj->depth = estado_actual->depth + 1;
-            queue_insert(queue, estado_adj);
+        while (!lista_vacia(adj_nodes)) {
+            State* estado_siguente = (State*) list_first(adj_nodes);
+            estado_siguente->depth = estado_actual->depth + 1;
+            queue_insert(queue, estado_siguente);
             list_popFront(adj_nodes);
             cont++;
         }
@@ -217,13 +217,13 @@ void bfs(State *estado_inicial) {
 int main() {
     // Estado inicial del puzzle
     State estado_inicial = {
-        {{0, 2, 8}, // Primera fila (0 representa espacio vacío)
+        {{0, 2, 8}, // Primera fila
          {1, 3, 4}, // Segunda fila
          {6, 5, 7}, // Tercera fila
          },  
-        0, 0, // Posición del espacio vacío (fila 0, columna 0)
-        list_create(), // Lista de acciones
-        0 // Profundidad inicial
+        0, 0, // Posición del espacio vacío
+        list_create(),
+        0 
     };
 
     // Imprime el estado inicial
@@ -232,18 +232,18 @@ int main() {
 
     printf("Distancia L1: %d\n", distancia_L1(&estado_inicial));
 
-    // Ejemplo de heap (cola con prioridad)
+
     printf("\n***** EJEMPLO USO DE HEAP ******\nCreamos un Heap e insertamos 3 elementos con distinta prioridad\n");
     Heap* heap = heap_create();
     char* data = strdup("Cinco");
     printf("Insertamos el elemento %s con prioridad -5\n", data);
-    heap_push(heap, data, -5 /*prioridad*/);
+    heap_push(heap, data, -5 );
     data = strdup("Seis");
     printf("Insertamos el elemento %s con prioridad -6\n", data);
-    heap_push(heap, data, -6 /*prioridad*/);
+    heap_push(heap, data, -6 );
     data = strdup("Siete");
     printf("Insertamos el elemento %s con prioridad -7\n", data);
-    heap_push(heap, data, -7 /*prioridad*/);
+    heap_push(heap, data, -7 );
 
     printf("\nLos elementos salen del Heap ordenados de mayor a menor prioridad\n");
     while (heap_top(heap) != NULL) {
@@ -281,8 +281,8 @@ int main() {
             // al estar solo este no lo tengo que hacer
             break;
         }
-        //presioneTeclaParaContinuar();
-        //limpiarPantalla();
+        presioneTeclaParaContinuar();
+        limpiarPantalla();
     } while (opcion != 4);
 
     return 0;
