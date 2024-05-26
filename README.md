@@ -39,11 +39,11 @@ El programa permite resolver el rompecabezas de 8 piezas utilizando dos métodos
 Al ejecutar el programa, verás un menú con las siguientes opciones:
 
 1. **Búsqueda en Profundidad (DFS):**
-   Selecciona esta opción para usar DFS para resolver el rompecabezas. El programa imprimirá el estado inicial, el número total de iteraciones necesarias para encontrar la solución y el estado final del puzzle.
+   Selecciona esta opción para usar DFS para resolver el rompecabezas. El programa imprimirá el estado inicial, el número total de iteraciones necesarias para encontrar la solución, el estado final del puzzle y la secuencia que hizo para resolver el problema.
    Has seleccionado la opción 1: Búsqueda en Profundidad
 
 2. **Buscar en Anchura (BFS):**
-   Selecciona esta opción para usar BFS para resolver el rompecabezas. Similar a DFS, el programa imprimirá el estado inicial, el número total de nodos explorados y el estado final del puzzle.
+   Selecciona esta opción para usar BFS para resolver el rompecabezas. Similar a DFS, el programa imprimirá el estado inicial, el número total de nodos explorados, el estado final del puzzle y la secuencia que hizo para resolver el problema.
    Has seleccionado la opción 2: Búsqueda en Anchura
 
 3. **Salir:**
@@ -58,12 +58,14 @@ El programa imprime el estado inicial del puzzle antes de comenzar la búsqueda:
 El programa realiza la búsqueda en profundidad y muestra los resultados:
    Solución encontrada
    iteraciones para resolver el puzzle: [número de iteraciones]
+   secuencia de resolucion
 
 ### Búsqueda en Anchura (BFS):
 
 El programa realiza la búsqueda en anchura y muestra los resultados:
    Se encontró solución
    iteraciones para resolver el puzzle: [número de iteraciones]
+   secuencia de resolucion
 
 ## Contribuciones
 
@@ -77,10 +79,9 @@ El programa realiza la búsqueda en anchura y muestra los resultados:
 ## Problemas Conocidos
 
 - La funcionalidad para buscar por otros métodos (como la búsqueda mejor-primero) está en desarrollo.
-- la impresion de la secuencia mas corta en desarrollo.
 
 ## Áreas de Mejora
 
 - Mejorar la precisión y eficiencia de las búsquedas.
-- Implementar nuevas funcionalidades, como la búsqueda mejor-primero y y la impresion de la secuencia entera.
+- Implementar la búsqueda mejor-primero y mostrar la secuencia con imagenes.
 ```
